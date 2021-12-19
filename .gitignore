@@ -32,3 +32,5 @@ strd-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# docker pgdata volume for postgres
+/pgdata/
