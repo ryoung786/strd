@@ -8,13 +8,14 @@ defmodule Strd.LinksFixtures do
   Generate a link.
   """
   def link_fixture(attrs \\ %{}) do
-    {:ok, link} =
+    args =
       attrs
       |> Enum.into(%{
-        original: "some original",
-        short: "some short"
+        original: "http://foo.com",
+        short: "short"
       })
-      |> Strd.Links.create_link()
+
+    {:ok, link} = Strd.Links.create_link(args.original, args.short)
 
     link
   end

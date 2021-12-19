@@ -4,24 +4,9 @@ defmodule Strd.Links do
   """
 
   import Ecto.Query, warn: false
-
   alias Strd.Repo
   alias Strd.Links.Link
-
   require Logger
-
-  @doc """
-  Returns the list of links.
-
-  ## Examples
-
-      iex> list_links()
-      [%Link{}, ...]
-
-  """
-  def list_links do
-    Repo.all(Link)
-  end
 
   @doc """
   Gets a single link.
@@ -86,7 +71,7 @@ defmodule Strd.Links do
     # Recursion base case.  If we hit this, then we've generated 5 short urls,
     # and all of them have already been used.  In production, this is the kind of
     # thing we should alert on.
-    Logger.error("Unable to generate a unique short link", %{original: original_url})
+    Logger.error("Unable to generate a unique short link", %{original_url: original_url})
 
     # use new_changeset to avoid validation
     cs =
@@ -103,59 +88,16 @@ defmodule Strd.Links do
     |> Link.changeset(%{original: original_url, short: generate_short_url()})
     |> Repo.insert()
     |> case do
-      # We could make this more explicit and check that the error is a unieque
-      # constraint error on the short field, but realistically it won't
-      # hurt to go ahead and retry them all
-      {:error, _changeset} -> create_link_with_retries(original_url, retries - 1)
-      {:ok, link} -> {:ok, link}
+      {:error, changeset} ->
+        # Only retry with a newly generated short url if the error
+        # is that we violated the unique constraint
+        if short_url_taken?(changeset),
+          do: create_link_with_retries(original_url, retries - 1),
+          else: {:error, changeset}
+
+      {:ok, link} ->
+        {:ok, link}
     end
-  end
-
-  @doc """
-  Updates a link.
-
-  ## Examples
-
-      iex> update_link(link, %{field: new_value})
-      {:ok, %Link{}}
-
-      iex> update_link(link, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_link(%Link{} = link, attrs) do
-    link
-    |> Link.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a link.
-
-  ## Examples
-
-      iex> delete_link(link)
-      {:ok, %Link{}}
-
-      iex> delete_link(link)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_link(%Link{} = link) do
-    Repo.delete(link)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking link changes.
-
-  ## Examples
-
-      iex> change_link(link)
-      %Ecto.Changeset{data: %Link{}}
-
-  """
-  def change_link(%Link{} = link, attrs \\ %{}) do
-    Link.changeset(link, attrs)
   end
 
   defp generate_short_url() do
@@ -163,4 +105,7 @@ defmodule Strd.Links do
     # cryptographically secure string 6 characters long
     :crypto.strong_rand_bytes(6) |> Base.url_encode64() |> binary_part(0, 6)
   end
+
+  defp short_url_taken?({:short, {_, [constraint: :unique, constraint_name: _]}}), do: true
+  defp short_url_taken?(_), do: false
 end

@@ -21,6 +21,7 @@ defmodule Strd.Links.Link do
     link
     |> cast(attrs, [:original, :short])
     |> validate_required([:original, :short])
+    |> validate_length(:short, min: 3)
     |> validate_url(:original)
     |> validate_url(:short)
     |> unique_constraint(:short)
@@ -43,9 +44,13 @@ defmodule Strd.Links.Link do
   defp validate_url(%Ecto.Changeset{} = link_changeset, :short) do
     path = Ecto.Changeset.get_field(link_changeset, :short)
 
-    case URI.new(path) do
-      {:ok, _uri} -> link_changeset
-      {:error, part} -> add_error(link_changeset, :short, "Cannot use #{part} in a short link")
+    if is_nil(path) do
+      link_changeset
+    else
+      case URI.new(path) do
+        {:ok, _uri} -> link_changeset
+        {:error, part} -> add_error(link_changeset, :short, "Cannot use #{part} in a short link")
+      end
     end
   end
 end

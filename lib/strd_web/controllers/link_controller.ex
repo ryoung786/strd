@@ -21,7 +21,7 @@ defmodule StrdWeb.LinkController do
     case StrdWeb.LinkController.UserInput.normalize(params) do
       {:ok, %{original: original, short: short}} -> create_link(conn, original, short)
       {:ok, %{original: original}} -> create_link(conn, original)
-      {:error, changeset} -> render(conn, "new.html", changeset: changeset)
+      {:error, changeset} -> render(conn, "index.html", changeset: changeset)
     end
   end
 
@@ -40,7 +40,7 @@ defmodule StrdWeb.LinkController do
   end
 
   defp handle_create_link({:error, %Ecto.Changeset{} = changeset}, conn) do
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "index.html", changeset: changeset)
   end
 end
 
