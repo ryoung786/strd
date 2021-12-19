@@ -1,0 +1,24 @@
+body {
+  background-image: url(/images/bg.png);
+  background-color: #CFE0D6;
+  color: #485e52;
+}
+
+body > header {
+  background: none;
+  border-bottom: none;
+}
+
+body > header > section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.navbar-home img {
+  width: 25px;
+  vertical-align: bottom;
+}
+
+form input[type=text] {
+  background-color: white;
+}
