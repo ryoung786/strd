@@ -12,7 +12,9 @@ setup:
 # an http server process that listens on any unreserved port
 #	of your choice (e.g. 8080).
 server:
+	mix phx.server
 
 # `make test` will be used after `make setup` in order to run
 # your test suite.
 test:
+	mix test
