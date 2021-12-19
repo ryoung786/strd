@@ -32,9 +32,19 @@ defmodule Strd.Links.Link do
 
     case URI.new(link) do
       {:ok, %{scheme: scheme, host: host}} ->
-        if scheme != nil and host != nil and String.contains?(host, "."),
-          do: link_changeset,
-          else: add_error(link_changeset, :original, "Not a valid URL")
+        cond do
+          scheme not in ~w(http https) ->
+            err_msg = "URL must begin with \"http://\" or \"https://\""
+            add_error(link_changeset, :original, err_msg)
+
+          Regex.match?(~r/.\.../, host) ->
+            # This regex ensures the host has at least one character
+            # preceeding the '.', and at least 2 characters in the tld
+            add_error(link_changeset, :original, "Invalid host name")
+
+          true ->
+            link_changeset
+        end
 
       {:error, _part} ->
         add_error(link_changeset, :original, "Not a valid URL")

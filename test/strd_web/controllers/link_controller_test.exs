@@ -22,9 +22,19 @@ defmodule StrdWeb.LinkControllerTest do
       assert html_response(conn, 200) =~ "Show Link"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.link_path(conn, :create), link: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Not a valid URL"
+    test "renders errors when link has no .com", %{conn: conn} do
+      conn = post(conn, Routes.link_path(conn, :create), link: %{original: "http://foo"})
+      assert html_response(conn, 200) =~ "Invalid host name"
+    end
+
+    test "renders errors when link doesn't start with http or https", %{conn: conn} do
+      conn = post(conn, Routes.link_path(conn, :create), link: %{original: "htt://foo.com"})
+      assert html_response(conn, 200) =~ "URL must begin with"
+    end
+
+    test "renders errors when link doesn't have a host name", %{conn: conn} do
+      conn = post(conn, Routes.link_path(conn, :create), link: %{original: "https://.com"})
+      assert html_response(conn, 200) =~ "Invalid host name"
     end
   end
 
