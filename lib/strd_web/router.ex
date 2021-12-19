@@ -20,6 +20,8 @@ defmodule StrdWeb.Router do
     get "/", LinkController, :index
     post "/", LinkController, :create
     get "/links/:short_url", LinkController, :show
+
+    get "/:short_url", LinkController, :redirect_short_url
   end
 
   # Other scopes may use custom stacks.

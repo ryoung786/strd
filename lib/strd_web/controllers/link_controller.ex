@@ -10,6 +10,11 @@ defmodule StrdWeb.LinkController do
     render(conn, "index.html", changeset: UserInput.changeset())
   end
 
+  def redirect_short_url(conn, %{"short_url" => short_url}) do
+    link = Links.get_by_short_url!(short_url)
+    redirect(conn, external: link.original)
+  end
+
   def show(conn, %{"short_url" => short_url}) do
     link = Links.get_by_short_url!(short_url)
     render(conn, "show.html", link: link)
