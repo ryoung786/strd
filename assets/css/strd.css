@@ -39,6 +39,10 @@ form label .optional {
   opacity: .7;
 }
 
+form input.link-short {
+  max-width: 380px;
+}
+
 main .alert {
   opacity: 0;
   animation: alert-fade-in .5s cubic-bezier(.54,1.85,.5,1) forwards;
