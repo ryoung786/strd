@@ -4,15 +4,15 @@
 
   <li>
     <strong>Original:</strong>
-    <%= @link.original %>
+    <a href={@link.original}><%= @link.original %></a>
   </li>
 
   <li>
+    <% short = full_short_link(@link.short) %>
     <strong>Short:</strong>
-    <%= @link.short %>
+    <a href={short}><%= short %></a>
   </li>
 
 </ul>
 
-<span><%= link "Edit", to: Routes.link_path(@conn, :edit, @link) %></span> |
 <span><%= link "Back", to: Routes.link_path(@conn, :index) %></span>

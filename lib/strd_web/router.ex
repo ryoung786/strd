@@ -17,9 +17,9 @@ defmodule StrdWeb.Router do
   scope "/", StrdWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-
-    resources "/links", LinkController
+    get "/", LinkController, :index
+    post "/", LinkController, :create
+    get "/links/:short_url", LinkController, :show
   end
 
   # Other scopes may use custom stacks.

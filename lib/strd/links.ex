@@ -40,6 +40,22 @@ defmodule Strd.Links do
   def get_link!(id), do: Repo.get!(Link, id)
 
   @doc """
+  Gets a single link.
+
+  Raises `Ecto.NoResultsError` if the Link does not exist.
+
+  ## Examples
+
+      iex> get_by_short_url!("aY3QPy")
+      %Link{}
+
+      iex> get_by_short_url!("none")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_by_short_url!(short_url), do: Repo.get_by!(Link, short: short_url)
+
+  @doc """
   Creates a link.
 
   ## Examples

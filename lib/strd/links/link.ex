@@ -49,3 +49,9 @@ defmodule Strd.Links.Link do
     end
   end
 end
+
+defimpl Phoenix.Param, for: Strd.Links.Link do
+  def to_param(%{short: short_url}) do
+    "#{short_url}"
+  end
+end

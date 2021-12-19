@@ -7,12 +7,12 @@ defmodule StrdWeb.LinkController do
   alias Strd.Links
 
   def index(conn, _params) do
-    links = Links.list_links()
-    render(conn, "index.html", links: links)
+    render(conn, "index.html", changeset: UserInput.changeset())
   end
 
-  def new(conn, _params) do
-    render(conn, "new.html", changeset: UserInput.changeset())
+  def show(conn, %{"short_url" => short_url}) do
+    link = Links.get_by_short_url!(short_url)
+    render(conn, "show.html", link: link)
   end
 
   def create(conn, %{"link" => params}) do
@@ -23,20 +23,6 @@ defmodule StrdWeb.LinkController do
       {:ok, %{original: original}} -> create_link(conn, original)
       {:error, changeset} -> render(conn, "new.html", changeset: changeset)
     end
-  end
-
-  def show(conn, %{"id" => id}) do
-    link = Links.get_link!(id)
-    render(conn, "show.html", link: link)
-  end
-
-  def delete(conn, %{"id" => id}) do
-    link = Links.get_link!(id)
-    {:ok, _link} = Links.delete_link(link)
-
-    conn
-    |> put_flash(:info, "Link deleted successfully.")
-    |> redirect(to: Routes.link_path(conn, :index))
   end
 
   defp create_link(conn, original, short) do
