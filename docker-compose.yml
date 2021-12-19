@@ -3,6 +3,8 @@ version: "3"
 services:
   phoenix:
     build: .
+    environment:
+      POSTGRES_HOST: db
     volumes:
       - .:/app
     ports:
@@ -14,6 +16,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: db
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
     volumes:
