@@ -19,7 +19,7 @@ defmodule StrdWeb.LinkControllerTest do
       assert redirected_to(conn) == Routes.link_path(conn, :show, short_url)
 
       conn = get(conn, Routes.link_path(conn, :show, short_url))
-      assert html_response(conn, 200) =~ "Show Link"
+      assert html_response(conn, 200) =~ "<h1>Link</h1>"
     end
 
     test "renders errors when link has no .com", %{conn: conn} do

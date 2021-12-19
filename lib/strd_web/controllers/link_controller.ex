@@ -67,9 +67,13 @@ defmodule StrdWeb.LinkController.UserInput do
     |> update_change(:original, &String.trim/1)
     |> update_change(:short, &String.trim/1)
     |> update_change(:short, &URI.encode/1)
-    |> validate_length(:original, count: :bytes, max: 512)
+    |> validate_length(:original,
+      count: :bytes,
+      max: 512,
+      message: "Max length: %{count} characters"
+    )
     |> validate_format(:short, ~r/^\w+$/)
-    |> validate_length(:short, max: 256)
+    |> validate_length(:short, max: 256, message: "Max length: %{count} characters")
     |> apply_action(:insert)
   end
 end
