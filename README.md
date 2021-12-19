@@ -1,19 +1,27 @@
 # Strd
+A URL Shortener exercise
 
-To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Setup
+```bash
+$ # ensure docker is running
+$ make setup
+```
+This will build the application, create the database, and run the migrations.  
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+Note: It's possible this may fail the first time, as the web server may try to connect to the db before it is ready to accept connections.  If this happens, you can run this command again.
 
-## Learn more
+## Running the app
+```bash
+$ make server
+```
+This runs `docker-compose up` to spin up the phoenix service and the postgres db.  Once this is running, you should be able to navigate to [http://localhost:8080](http://localhost:8080) and see the app running.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Running the tests
+To run the tests locally, run
+```bash
+$ make test
+```
+
+Alternatively, the test suite will be run automatically on any pull request or commit pushed to the `main` branch on Github via a Github Action.
