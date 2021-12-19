@@ -2,7 +2,6 @@ defmodule StrdWeb.LinkControllerTest do
   use StrdWeb.ConnCase
 
   @create_attrs %{original: "http://foo.com"}
-  @invalid_attrs %{original: "foo"}
 
   describe "index" do
     test "has form to create a link", %{conn: conn} do
