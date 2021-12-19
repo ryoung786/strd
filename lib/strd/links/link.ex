@@ -37,7 +37,7 @@ defmodule Strd.Links.Link do
             err_msg = "URL must begin with \"http://\" or \"https://\""
             add_error(link_changeset, :original, err_msg)
 
-          Regex.match?(~r/.\.../, host) ->
+          !Regex.match?(~r/.\.../, host) ->
             # This regex ensures the host has at least one character
             # preceeding the '.', and at least 2 characters in the tld
             add_error(link_changeset, :original, "Invalid host name")
