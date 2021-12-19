@@ -9,6 +9,13 @@ defmodule Strd.Links.Link do
     timestamps()
   end
 
+  @type t :: %__MODULE__{original: String.t(), short: String.t()}
+
+  @doc false
+  def new_changeset(link, attrs) do
+    cast(link, attrs, [:original, :short])
+  end
+
   @doc false
   def changeset(link, attrs) do
     link

@@ -4,9 +4,11 @@ defmodule Strd.Links do
   """
 
   import Ecto.Query, warn: false
-  alias Strd.Repo
 
+  alias Strd.Repo
   alias Strd.Links.Link
+
+  require Logger
 
   @doc """
   Returns the list of links.
@@ -45,32 +47,51 @@ defmodule Strd.Links do
       iex> create_link(url)
       {:ok, %Link{}}
 
-      iex> create_link(%{field: bad_value})
+      iex> create_link(malformed_url)
       {:error, %Ecto.Changeset{}}
 
   """
+  @spec create_link(String.t()) :: {:ok, Link.t()} | {:error, Ecto.Changeset.t()}
   def create_link(original_url) do
     create_link_with_retries(original_url, 5)
   end
 
+  @spec create_link(String.t(), String.t()) :: {:ok, Link.t()} | {:error, Ecto.Changeset.t()}
   def create_link(original_url, short_url) do
+    # When the client provides a short url, we don't need to generate one.
+    # This also means we don't need to retry Link creation if it fails the
+    # unique constraint check.
     %Link{}
     |> Link.changeset(%{original: original_url, short: short_url})
     |> Repo.insert()
   end
 
   defp create_link_with_retries(original_url, 0) do
-    cs = Link.changeset(%Link{original: original_url}, %{})
-    {:error, Ecto.Changeset.add_error(cs, :original, "Unable to create a unique link")}
+    # Recursion base case.  If we hit this, then we've generated 5 short urls,
+    # and all of them have already been used.  In production, this is the kind of
+    # thing we should alert on.
+    Logger.error("Unable to generate a unique short link", %{original: original_url})
+
+    # use new_changeset to avoid validation
+    cs =
+      %Link{original: original_url}
+      |> Link.new_changeset(%{})
+      |> Ecto.Changeset.add_error(:original, "Unable to generate a unique link")
+      |> Map.put(:action, :insert)
+
+    {:error, cs}
   end
 
   defp create_link_with_retries(original_url, retries) do
-    try do
-      %Link{}
-      |> Link.changeset(%{original: original_url, short: generate_short_url()})
-      |> Repo.insert()
-    rescue
-      Ecto.ConstraintError -> create_link_with_retries(original_url, retries - 1)
+    %Link{}
+    |> Link.changeset(%{original: original_url, short: generate_short_url()})
+    |> Repo.insert()
+    |> case do
+      # We could make this more explicit and check that the error is a unieque
+      # constraint error on the short field, but realistically it won't
+      # hurt to go ahead and retry them all
+      {:error, _changeset} -> create_link_with_retries(original_url, retries - 1)
+      {:ok, link} -> {:ok, link}
     end
   end
 
@@ -121,8 +142,9 @@ defmodule Strd.Links do
     Link.changeset(link, attrs)
   end
 
-  # Not guaranteed to be unique!
   defp generate_short_url() do
+    # Not guaranteed to be unique!  This just generates a random
+    # cryptographically secure string 6 characters long
     :crypto.strong_rand_bytes(6) |> Base.url_encode64() |> binary_part(0, 6)
   end
 end

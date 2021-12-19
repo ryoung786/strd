@@ -18,7 +18,6 @@ defmodule StrdWeb.LinkController do
   def create(conn, %{"link" => params}) do
     # by normalizing our user input, we can ensure our Context
     # has an explicit contract boundary
-
     case StrdWeb.LinkController.UserInput.normalize(params) do
       {:ok, %{original: original, short: short}} -> create_link(conn, original, short)
       {:ok, %{original: original}} -> create_link(conn, original)
@@ -69,6 +68,9 @@ defmodule StrdWeb.LinkController.UserInput do
     |> cast(params, Map.keys(@types))
   end
 
+  @doc """
+  Change our param map keys from strings to keywords and sanitize the user input
+  """
   def normalize(params) do
     changeset(params)
     |> update_change(:original, &String.trim/1)
