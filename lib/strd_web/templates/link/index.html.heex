@@ -11,7 +11,9 @@
   <%= text_input f, :original %>
   <%= error_tag f, :original %>
 
-  <%= label f, :short %>
+  <%= label f, :short do %>
+    Short <span class="optional">(Optional)</span>
+  <% end %>
   <%= text_input f, :short %>
   <%= error_tag f, :short %>
 

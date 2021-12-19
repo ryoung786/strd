@@ -1,3 +1,7 @@
+/*********************************/
+/* Common: body and header */
+/*********************************/
+
 body {
   background-image: url(/images/bg.png);
   background-color: #CFE0D6;
@@ -19,6 +23,42 @@ body > header > section {
   vertical-align: bottom;
 }
 
+ul { list-style: none; }
+
+a { color: #0019d9; }
+
+/*********************************/
+/* Link creation */
+/*********************************/
 form input[type=text] {
   background-color: white;
+}
+
+form label .optional {
+  font-weight: normal;
+  opacity: .7;
+}
+
+main .alert {
+  opacity: 0;
+  animation: alert-fade-in .5s cubic-bezier(.54,1.85,.5,1) forwards;
+  animation-delay: .5s;
+}
+
+main .alert-info {
+  color: #303e36;
+  background-color: #79b594;
+  border-color: #485e52;
+}
+
+@keyframes alert-fade-in{
+  from {
+    transform: translateY(-25%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
