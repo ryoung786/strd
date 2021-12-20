@@ -4,10 +4,12 @@ The spec says
 
 From a usability perspective, I would probably allow users to omit the `http`/`https` scheme and would assume `http` if it didn't exist.  Most sites these days will automatically redirect you from `http` to `https` if they support it, and it would make for a cleaner user experience.  Since the specs were explicit though, I require the scheme to be present and one of `http` or `https` and give a specific error message otherwise.
 
-## CI
+## CI/CD
 I added a github actions workflow that runs the test suite after each push to the `main` branch.  I figured this would be the easiest way for the reviewer to assess this requirement, as the results are publically visible on Github.  Alternatives would be to use CircleCI, Jenkins, or any of the many other CI providers.
 
 I did not set up code coverage stats - this would be a great follow up task if this needed to be productionized.
+
+The github actions workflow also deploys the site to heroku, specifically [https://afternoon-castle-16818.herokuapp.com](https://afternoon-castle-16818.herokuapp.com).  It will only deploy on pushes to the `main` branch that successfully pass the test suite.
 
 ## Performance
 
