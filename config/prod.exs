@@ -18,6 +18,7 @@ config :aoc, AocWeb.Endpoint,
   http: [port: {:system, "PORT"}],
   # url: [host: "example.com", port: 80],
   url: [scheme: "https", host: "afternoon-castle-16818.herokuapp.com", port: 443],
+  force_ssl: [rewrite_on: [:x_forwarded_proto]],
   # cache_static_manifest: "priv/static/cache_manifest.json",
   check_origin: [
     "https://strd.ryoung.info",
