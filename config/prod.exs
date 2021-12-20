@@ -14,6 +14,17 @@ config :strd, StrdWeb.Endpoint, cache_static_manifest: "priv/static/cache_manife
 # Do not print debug messages in production
 config :logger, level: :info
 
+# config :strd, AocWeb.Endpoint,
+#   http: [port: {:system, "PORT"}],
+#   # url: [host: "example.com", port: 80],
+#   url: [scheme: "https", host: "afternoon-castle-16818.herokuapp.com", port: 443],
+#   force_ssl: [rewrite_on: [:x_forwarded_proto]],
+#   # cache_static_manifest: "priv/static/cache_manifest.json",
+#   check_origin: [
+#     "https://strd.ryoung.info",
+#     "https://afternoon-castle-16818.herokuapp.com"
+#   ]
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

@@ -10,7 +10,7 @@
   <li>
     <% short = full_short_link(@link.short) %>
     <strong>Short:</strong>
-    <a href={short}><%= short %></a>
+    <a href={"/#{@link.short}"}><%= short %></a>
   </li>
 
   <li>
