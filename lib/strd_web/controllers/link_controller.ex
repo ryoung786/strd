@@ -24,8 +24,6 @@ defmodule StrdWeb.LinkController do
   end
 
   def create(conn, %{"link" => params}) do
-    # by normalizing our user input, we can ensure our Context
-    # has an explicit contract boundary
     case StrdWeb.LinkController.UserInput.normalize(params) do
       {:ok, %{original: original, short: short}} -> create_link(conn, original, short)
       {:ok, %{original: original}} -> create_link(conn, original)
@@ -54,6 +52,7 @@ end
 
 defmodule StrdWeb.LinkController.UserInput do
   import Ecto.Changeset
+  alias Strd.Links.Link
 
   @types %{original: :string, short: :string}
 
@@ -66,6 +65,12 @@ defmodule StrdWeb.LinkController.UserInput do
   Change our param map keys from strings to keywords and sanitize the user input
   """
   def normalize(params) do
+    # by normalizing our user input, we can ensure our Context
+    # has an explicit contract boundary
+    #
+    # I really dislike having the validation duplicated both here and in the schema,
+    # but it's accomplishing 2 different tasks.  Here, we want to allow the short
+    # link to be empty, whereas in the schema we need to verify it to be present.
     changeset(params)
     |> update_change(:original, &String.trim/1)
     |> update_change(:short, &String.trim/1)
@@ -75,6 +80,7 @@ defmodule StrdWeb.LinkController.UserInput do
       max: 512,
       message: "Max length: %{count} characters"
     )
+    |> Link.validate_url(:original)
     |> validate_format(:short, ~r/^\w+$/)
     |> validate_length(:short, max: 256, message: "Max length: %{count} characters")
     |> apply_action(:insert)

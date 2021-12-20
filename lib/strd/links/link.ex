@@ -29,7 +29,7 @@ defmodule Strd.Links.Link do
     |> unique_constraint(:short)
   end
 
-  defp validate_url(%Ecto.Changeset{} = link_changeset, :original) do
+  def validate_url(%Ecto.Changeset{} = link_changeset, :original) do
     link = Ecto.Changeset.get_field(link_changeset, :original)
 
     case URI.new(link) do
@@ -53,7 +53,7 @@ defmodule Strd.Links.Link do
     end
   end
 
-  defp validate_url(%Ecto.Changeset{} = link_changeset, :short) do
+  def validate_url(%Ecto.Changeset{} = link_changeset, :short) do
     path = Ecto.Changeset.get_field(link_changeset, :short)
 
     if is_nil(path) do
