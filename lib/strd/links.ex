@@ -22,6 +22,7 @@ defmodule Strd.Links do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_link!(integer()) :: Link.t()
   def get_link!(id), do: Repo.get!(Link, id)
 
   @doc """
@@ -38,6 +39,7 @@ defmodule Strd.Links do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_by_short_url!(String.t()) :: Link.t()
   def get_by_short_url!(short_url), do: Repo.get_by!(Link, short: short_url)
 
   @doc """
@@ -98,6 +100,15 @@ defmodule Strd.Links do
       {:ok, link} ->
         {:ok, link}
     end
+  end
+
+  @doc """
+  Increments the view_count of a given Link by num
+  """
+  @spec increase_view_count(String.t(), integer()) :: {integer(), [any()]}
+  def increase_view_count(short_url, num \\ 1) when short_url != nil do
+    from(l in Link, where: l.short == ^short_url, select: l.view_count)
+    |> Repo.update_all(inc: [view_count: num])
   end
 
   defp generate_short_url() do

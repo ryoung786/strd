@@ -5,6 +5,7 @@ defmodule Strd.Links.Link do
   schema "links" do
     field :original, :string
     field :short, :string
+    field :view_count, :integer, default: 0
 
     timestamps()
   end
@@ -13,17 +14,18 @@ defmodule Strd.Links.Link do
 
   @doc false
   def new_changeset(link, attrs) do
-    cast(link, attrs, [:original, :short])
+    cast(link, attrs, [:original, :short, :view_count])
   end
 
   @doc false
   def changeset(link, attrs) do
     link
-    |> cast(attrs, [:original, :short])
+    |> cast(attrs, [:original, :short, :view_count])
     |> validate_required([:original, :short])
     |> validate_length(:short, min: 3)
     |> validate_url(:original)
     |> validate_url(:short)
+    |> validate_number(:view_count, min: 0)
     |> unique_constraint(:short)
   end
 

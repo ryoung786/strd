@@ -12,6 +12,9 @@ defmodule StrdWeb.LinkController do
 
   def redirect_short_url(conn, %{"short_url" => short_url}) do
     link = Links.get_by_short_url!(short_url)
+
+    :telemetry.execute([:links, :short], %{views: 1}, %{short_url: short_url})
+
     redirect(conn, external: link.original)
   end
 
