@@ -20,9 +20,11 @@
             <% end %>
           </ul>
         </nav>
-        <%= link to: Routes.link_path(@conn, :index), class: "navbar-home" do %>
-          <img src={Routes.static_path(@conn, "/images/logo.png")} alt="Stord Logo" />
-        <% end %>
+        <nav>
+          <%= link to: Routes.link_path(@conn, :index), class: "navbar-home" do %>
+            <img src={Routes.static_path(@conn, "/images/logo.png")} alt="Stord Logo" />
+          <% end %>
+        </nav>
       </section>
     </header>
     <%= @inner_content %>

@@ -18,6 +18,10 @@ body > header > section {
   grid-template-columns: 1fr 1fr;
 }
 
+body > header nav > a {
+  display: inline-block;
+}
+
 .navbar-home img {
   width: 25px;
   vertical-align: bottom;
@@ -30,7 +34,7 @@ a { color: #0019d9; }
 /*********************************/
 /* Link creation */
 /*********************************/
-form input[type=text] {
+form input[type=text], form input[type=url] {
   background-color: white;
 }
 
@@ -50,8 +54,8 @@ main .alert {
 }
 
 main .alert-info {
-  color: #303e36;
-  background-color: #79b594;
+  color: #485e52;
+  background-color: #aac7b7;
   border-color: #485e52;
 }
 
