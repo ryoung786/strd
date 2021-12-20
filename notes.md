@@ -25,3 +25,9 @@ All in all, I could be convinced either way.  Perhaps if we expected the app to 
 The specs mention a performance requirement of 5 req/s.  One place we could cut time is generating the random short urls.  Instead of computing new ones on demand each request and potentially re-generating them on failed db inserts, we could generate them asyncronously and always keep a pool available.  I envisioned a separate service that can be queried for another chunk of new random short urls.  That service could be checking them against the db to guarantee their uniqueness.  Upon a new app server booting up, it could grab 1000 or so (whatever amount is appropriate given historical traffic) from the service and just keep it in a genserver.  That way, when someone wants to create a new link, the app can pop one off the top of its pool and that's it.
 
 This is probably the approach I'd go with if we were really serious about performance and scalability.  But for the purposes of the weekend take-home, it was much easier implement the generation of random strings and retries on collisions.
+
+
+## View Stats
+I implemented this as a simple integer column on the existing links table, out of simplicity and time constraints.  The main problem with this approach for a production system is that the stats will be written to constantly, and putting that kind of write load on the same table needed for link lookups could provide problems.  The first thing I'd do is batch up views.  Write them to a cache like ETS, Redis, or Memcache as an aggregated value `%{link_id => views}`, and then flush periodically to the database.
+
+As a side note, this is a really good use case for Telemetry, and it'd be fun to extend this into time-series data that we could then show the user in the application.  That way the user could get a sense of not just how many views their link has, but also _when_ it became popular or started declining in popularity.

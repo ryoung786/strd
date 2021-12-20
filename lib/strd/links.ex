@@ -100,6 +100,15 @@ defmodule Strd.Links do
     end
   end
 
+  @doc """
+  Increments the view_count of a given Link by num
+  """
+  @spec increase_view_count(Link.t(), integer()) :: {integer(), [any()]}
+  def increase_view_count(%Link{short: short_url}, num \\ 1) when short_url != nil do
+    from(l in Link, where: l.short == ^short_url, select: l.view_count)
+    |> Repo.update_all(inc: [view_count: num])
+  end
+
   defp generate_short_url() do
     # Not guaranteed to be unique!  This just generates a random
     # cryptographically secure string 6 characters long

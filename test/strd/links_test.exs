@@ -11,6 +11,15 @@ defmodule Strd.LinksTest do
       assert Links.get_link!(link.id) == link
     end
 
+    test "increase_view_count increments view count and returns the new count" do
+      link = link_fixture()
+      assert {1, [1]} = Links.increase_view_count(link)
+      assert {1, [2]} = Links.increase_view_count(link)
+      assert {1, [7]} = Links.increase_view_count(link, 5)
+
+      assert %Link{view_count: 7} = Links.get_link!(link.id)
+    end
+
     test "create_link/1 with valid data creates a link" do
       original = "http://foo.com"
       assert {:ok, %Link{} = link} = Links.create_link(original)
