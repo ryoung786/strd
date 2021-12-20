@@ -58,3 +58,23 @@ jobs:
       - run: mix deps.get
       - run: mix format --check-formatted
       - run: mix test
+
+  deploy:
+    needs: [test] # Will only run if the test job succeeds
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main # Checkout out main instead of the latest commit
+          fetch-depth: 0 # Checkout the whole branch
+
+      - uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "afternoon-castle-16818" #Must be unique in Heroku
+          heroku_email: "${{secrets.HEROKU_EMAIL}}"
+          buildpack: "https://github.com/HashNuke/heroku-buildpack-elixir.git"
+      - run: heroku run "POOL_SIZE=2 mix ecto.migrate"
