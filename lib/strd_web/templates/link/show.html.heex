@@ -13,6 +13,11 @@
     <a href={short}><%= short %></a>
   </li>
 
+  <li>
+    <strong>Views:</strong>
+    <%= @link.view_count %>
+  </li>
+
 </ul>
 
 <span><%= link "Back", to: Routes.link_path(@conn, :index) %></span>

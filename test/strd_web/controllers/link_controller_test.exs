@@ -1,5 +1,6 @@
 defmodule StrdWeb.LinkControllerTest do
   use StrdWeb.ConnCase
+  alias Strd.Links
 
   @create_attrs %{original: "http://foo.com"}
 
@@ -44,6 +45,18 @@ defmodule StrdWeb.LinkControllerTest do
 
       conn = get(conn, Routes.link_path(conn, :redirect_short_url, short_url))
       assert redirected_to(conn) == @create_attrs.original
+    end
+
+    test "increases the link's view count", %{conn: conn} do
+      conn = post(conn, Routes.link_path(conn, :create), link: @create_attrs)
+      %{short_url: short_url} = redirected_params(conn)
+      link = Links.get_by_short_url!(short_url)
+      assert link.view_count == 0
+
+      # Ping the short link, get redirected, then assert the views went up by 1
+      get(conn, Routes.link_path(conn, :redirect_short_url, short_url))
+      link = Links.get_by_short_url!(short_url)
+      assert link.view_count == 1
     end
   end
 end

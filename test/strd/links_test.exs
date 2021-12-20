@@ -13,9 +13,9 @@ defmodule Strd.LinksTest do
 
     test "increase_view_count increments view count and returns the new count" do
       link = link_fixture()
-      assert {1, [1]} = Links.increase_view_count(link)
-      assert {1, [2]} = Links.increase_view_count(link)
-      assert {1, [7]} = Links.increase_view_count(link, 5)
+      assert {1, [1]} = Links.increase_view_count(link.short)
+      assert {1, [2]} = Links.increase_view_count(link.short)
+      assert {1, [7]} = Links.increase_view_count(link.short, 5)
 
       assert %Link{view_count: 7} = Links.get_link!(link.id)
     end
