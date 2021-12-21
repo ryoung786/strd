@@ -12,6 +12,57 @@ I did not set up code coverage stats - this would be a great follow up task if t
 The github actions workflow also deploys the site to heroku, specifically [https://afternoon-castle-16818.herokuapp.com](https://afternoon-castle-16818.herokuapp.com).  It will only deploy on pushes to the `main` branch that successfully pass the test suite.
 
 ## Performance
+I used apache bench (ab) to send load test the site running in production on a free heroku instance, with a free postgres hobby instance.  The results weren't great, but I think that's to be expected of the free heroku tier.  Still, 80% of requests served in under 120 ms is decent for the homepage.
+
+```
+✔ ~/dev/strd [main|✔]
+03:53 $ ab -n 100 -c 5 https://strd.ryoung.info/links/twtr
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking strd.ryoung.info (be patient).....done
+
+
+Server Software:        cloudflare
+Server Hostname:        strd.ryoung.info
+Server Port:            443
+SSL/TLS Protocol:       TLSv1.2,ECDHE-ECDSA-CHACHA20-POLY1305,256,256
+Server Temp Key:        ECDH X25519 253 bits
+TLS Server Name:        strd.ryoung.info
+
+Document Path:          /links/twtr
+Document Length:        1840 bytes
+
+Concurrency Level:      5
+Time taken for tests:   6.520 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      303782 bytes
+HTML transferred:       184000 bytes
+Requests per second:    15.34 [#/sec] (mean)
+Time per request:       326.012 [ms] (mean)
+Time per request:       65.202 [ms] (mean, across all concurrent requests)
+Transfer rate:          45.50 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       35  241 471.7     41    2049
+Processing:    48   57   6.4     55      85
+Waiting:       48   57   6.3     55      81
+Total:         87  298 471.1     99    2113
+
+Percentage of the requests served within a certain time (ms)
+  50%     99
+  66%    103
+  75%    110
+  80%    119
+  90%   1096
+  95%   1102
+  98%   2102
+  99%   2113
+ 100%   2113 (longest request)
+```
 
 ## Alternative Architectures Considered
 There were two other architectures I considered before settling on the current implementation, mostly out of time constraints.
