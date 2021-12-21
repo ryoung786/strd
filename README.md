@@ -1,6 +1,8 @@
 # Strd
 A URL Shortener exercise
 
+[https://strd.ryoung.info](strd.ryoung.info)
+
 
 
 ## Setup
