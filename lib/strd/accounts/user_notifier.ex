@@ -8,7 +8,7 @@ defmodule Strd.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"MyApp", "contact@example.com"})
+      |> from({"strd", "notifications@ryoung.info"})
       |> subject(subject)
       |> text_body(body)
 
