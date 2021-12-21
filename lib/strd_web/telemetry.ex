@@ -60,7 +60,7 @@ defmodule StrdWeb.Telemetry do
       summary("vm.total_run_queue_lengths.cpu"),
       summary("vm.total_run_queue_lengths.io"),
 
-      # App Metrics
+      # App Metrics (included here so that it shows up in LiveDashboard
       counter("links.short.views")
     ]
   end

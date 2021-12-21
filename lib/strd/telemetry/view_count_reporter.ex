@@ -1,5 +1,8 @@
 defmodule Strd.Telemetry.ViewCountReporter do
   @moduledoc """
+  This is a custom reporter that listens for `links.short.views` counter
+  measurement events.  When triggered, it will increase the `view_count`
+  of the associated Link by the given amount, and write to the info log.
   """
   use GenServer
   require Logger
