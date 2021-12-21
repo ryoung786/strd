@@ -77,4 +77,6 @@ jobs:
           heroku_app_name: "afternoon-castle-16818" #Must be unique in Heroku
           heroku_email: "${{secrets.HEROKU_EMAIL}}"
           buildpack: "https://github.com/HashNuke/heroku-buildpack-elixir.git"
+        env:
+          SENDGRID_API_KEY: ${{secrets.SENDGRID_API_KEY}}
       - run: heroku run "POOL_SIZE=2 mix ecto.migrate"
