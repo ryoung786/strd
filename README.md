@@ -9,8 +9,9 @@ A URL Shortener exercise
 
 ## Setup
 ```bash
-$ # ensure docker is running
-$ make setup
+$ git clone <this repo>
+$ cd strd
+$ make setup # depends on docker, please ensure docker is running
 ```
 This will build the application, create the database, and run the migrations.  
 
@@ -29,3 +30,6 @@ $ make test
 ```
 
 Alternatively, the test suite will be run automatically on any pull request or commit pushed to the `main` branch on Github via a Github Action.
+
+## Deploying to production
+A Github Action has been set up to deploy to heroku upon a successful push to the `main` branch that passes the test suite.  Once the workflow finishes running you'll be able to access the new version at [https://strd.ryoung.info](strd.ryoung.info)
