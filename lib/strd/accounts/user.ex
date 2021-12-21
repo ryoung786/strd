@@ -8,6 +8,8 @@ defmodule Strd.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
+    has_many :links, Strd.Links.Link
+
     timestamps()
   end
 

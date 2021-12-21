@@ -7,6 +7,8 @@ defmodule Strd.Links.Link do
     field :short, :string
     field :view_count, :integer, default: 0
 
+    belongs_to :user, Strd.Accounts.User
+
     timestamps()
   end
 

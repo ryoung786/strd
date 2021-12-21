@@ -23,5 +23,11 @@ defmodule Strd.Repo.Migrations.CreateUsersAuthTables do
 
     create index(:users_tokens, [:user_id])
     create unique_index(:users_tokens, [:context, :token])
+
+    alter table(:links) do
+      add :user_id, references(:users)
+    end
+
+    create index(:links, [:user_id])
   end
 end
