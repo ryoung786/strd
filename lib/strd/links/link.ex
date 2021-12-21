@@ -32,24 +32,28 @@ defmodule Strd.Links.Link do
   def validate_url(%Ecto.Changeset{} = link_changeset, :original) do
     link = Ecto.Changeset.get_field(link_changeset, :original)
 
-    case URI.new(link) do
-      {:ok, %{scheme: scheme, host: host}} ->
-        cond do
-          scheme not in ~w(http https) ->
-            err_msg = "URL must begin with \"http://\" or \"https://\""
-            add_error(link_changeset, :original, err_msg)
+    if is_nil(link) do
+      link_changeset
+    else
+      case URI.new(link) do
+        {:ok, %{scheme: scheme, host: host}} ->
+          cond do
+            scheme not in ~w(http https) ->
+              err_msg = "URL must begin with \"http://\" or \"https://\""
+              add_error(link_changeset, :original, err_msg)
 
-          !Regex.match?(~r/.\.../, host) ->
-            # This regex ensures the host has at least one character
-            # preceeding the '.', and at least 2 characters in the tld
-            add_error(link_changeset, :original, "Invalid host name")
+            !Regex.match?(~r/.\.../, host) ->
+              # This regex ensures the host has at least one character
+              # preceeding the '.', and at least 2 characters in the tld
+              add_error(link_changeset, :original, "Invalid host name")
 
-          true ->
-            link_changeset
-        end
+            true ->
+              link_changeset
+          end
 
-      {:error, _part} ->
-        add_error(link_changeset, :original, "Not a valid URL")
+        {:error, _part} ->
+          add_error(link_changeset, :original, "Not a valid URL")
+      end
     end
   end
 

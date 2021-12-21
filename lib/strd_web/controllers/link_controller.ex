@@ -74,7 +74,7 @@ defmodule StrdWeb.LinkController.UserInput do
     changeset(params)
     |> update_change(:original, &String.trim/1)
     |> update_change(:short, &String.trim/1)
-    |> update_change(:short, &URI.encode/1)
+    |> validate_required(:original)
     |> validate_length(:original,
       count: :bytes,
       max: 512,
