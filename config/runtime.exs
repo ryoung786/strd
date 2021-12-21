@@ -56,7 +56,7 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   # Configuring the mailer
-  config :socrates, Socrates.Mailer,
+  config :strd, Strd.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
     api_key: System.get_env("SENDGRID_API_KEY")
 

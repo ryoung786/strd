@@ -1,32 +1,19 @@
 <h1>Links</h1>
 
-<!--
-     <table>
-     <thead>
-     <th>Short link</th>
-     <th>Original link</th>
-     <th style="text-align: right">Views</th>
-     </thead>
-     <tbody>
-     <%= for link <- @links do %>
-     <% short = full_short_link(link.short) %>
-     <tr>
-     <td><a href={"/#{link.short}"}><%= short %></a></td>
-     <td><a href={link.original}><%= link.original %></a></td>
-     <td style="text-align: right"><%= link.view_count %></td>
-     </tr>
-     <% end %>
-     </tbody>
-     </table>
--->
+<%= if Enum.count(@links) > 0 do %>
 
-<ul class="my-links">
-  <%= for link <- @links do %>
-    <% short = full_short_link(link.short) %>
-    <li>
-      <p><a href={"/#{link.short}"}><%= short %></a> ➡
-        <a href={link.original}><%= link.original %></a></p>
-      <p><%= link.view_count %> views</p>
-    </li>
-  <% end %>
-</ul>
+  <ul class="my-links">
+    <%= for link <- @links do %>
+      <% short = full_short_link(link.short) %>
+      <li>
+        <p><a href={"/#{link.short}"}><%= short %></a> ➡
+          <a href={link.original}><%= link.original %></a></p>
+        <p><%= link.view_count %> views</p>
+      </li>
+    <% end %>
+  </ul>
+
+<% else %>
+  <p>Looks like you haven't shortened any links yet.</p>
+  <p>Click <%= link "here", to: Routes.link_path(@conn, :index) %> to create one.</p>
+<% end %>
