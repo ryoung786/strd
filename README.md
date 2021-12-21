@@ -3,6 +3,8 @@ A URL Shortener exercise
 
 [https://strd.ryoung.info](strd.ryoung.info)
 
+![img](priv/static/images/screenshot.png)
+
 
 
 ## Setup
