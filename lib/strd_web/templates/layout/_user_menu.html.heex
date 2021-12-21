@@ -1,10 +1,30 @@
-<ul>
-<%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
-<% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
-<% end %>
-</ul>
+<nav class="user-menu" x-data="{ isOpen: false}">
+
+    <div
+      href="#"
+      class="user-profile"
+      @click="isOpen = !isOpen"
+      @keydown.escape="isOpen = false"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#354BEB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    <ul x-show="isOpen" @click.away="isOpen = false" class="dropdown">
+      <%= if @current_user do %>
+        <li class="email"><%= @current_user.email %></li>
+        <li><%= link to: Routes.link_path(@conn, :index) do %>Your Links<% end %></li>
+        <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
+        <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+      <% else %>
+        <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
+        <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+      <% end %>
+
+      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+        <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+      <% end %>
+    </ul>
+
+</nav>
