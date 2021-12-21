@@ -8,6 +8,7 @@
 # for the first time
 setup:
 	docker-compose build
+	docker-compose run --rm phoenix mix deps.get
 	docker-compose run --rm phoenix mix ecto.create
 	docker-compose run --rm phoenix mix ecto.migrate
 
