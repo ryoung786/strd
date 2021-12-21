@@ -21,3 +21,6 @@ server:
 # your test suite.
 test:
 	docker-compose run --rm phoenix mix test
+
+iex:
+	docker-compose run --rm phoenix iex -S mix
