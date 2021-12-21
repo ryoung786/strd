@@ -13,12 +13,13 @@
   <body>
     <header>
       <section class="container">
-        <%= render "_user_menu.html", assigns %>
         <nav>
           <%= link to: Routes.link_path(@conn, :index), class: "navbar-home" do %>
             <img src={Routes.static_path(@conn, "/images/logo.png")} alt="Stord Logo" />
           <% end %>
         </nav>
+        <h1>strd.</h1>
+        <%= render "_user_menu.html", assigns %>
       </section>
     </header>
     <%= @inner_content %>

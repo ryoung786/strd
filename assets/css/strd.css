@@ -18,9 +18,9 @@ body > header {
   margin-top: 2rem;
 }
 
-body > header > section {
+body > header > section.container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 body > header nav > a {
@@ -32,6 +32,14 @@ body > header nav > a {
   vertical-align: bottom;
 }
 
+body > header > .container > h1 {
+  font-family: Courier;
+  text-align: center;
+  margin: 0;
+  color: #354BEB;
+  line-height: 26px;
+  font-size: 3rem;
+}
 
 
 /*********************************/
