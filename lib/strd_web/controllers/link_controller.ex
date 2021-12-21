@@ -10,6 +10,11 @@ defmodule StrdWeb.LinkController do
     render(conn, "index.html", changeset: UserInput.changeset())
   end
 
+  def mylinks_index(conn, _params) do
+    %{assigns: %{current_user: user}} = conn
+    render(conn, "mylinks_index.html", links: Links.get_by_user(user))
+  end
+
   def redirect_short_url(conn, %{"short_url" => short_url}) do
     link = Links.get_by_short_url!(short_url)
 
@@ -24,19 +29,21 @@ defmodule StrdWeb.LinkController do
   end
 
   def create(conn, %{"link" => params}) do
+    user = Map.get(conn.assigns, :current_user)
+
     case StrdWeb.LinkController.UserInput.normalize(params) do
-      {:ok, %{original: original, short: short}} -> create_link(conn, original, short)
-      {:ok, %{original: original}} -> create_link(conn, original)
+      {:ok, %{original: original, short: short}} -> create_link(conn, original, short, user)
+      {:ok, %{original: original}} -> create_link(conn, original, user)
       {:error, changeset} -> render(conn, "index.html", changeset: changeset)
     end
   end
 
-  defp create_link(conn, original, short) do
-    Links.create_link(original, short) |> handle_create_link(conn)
+  defp create_link(conn, original, short, user) do
+    Links.create_link(original, short, user) |> handle_create_link(conn)
   end
 
-  defp create_link(conn, original) do
-    Links.create_link(original) |> handle_create_link(conn)
+  defp create_link(conn, original, user) do
+    Links.create_link(original, user) |> handle_create_link(conn)
   end
 
   defp handle_create_link({:ok, link}, conn) do
@@ -82,7 +89,7 @@ defmodule StrdWeb.LinkController.UserInput do
     )
     |> Link.validate_url(:original)
     |> validate_format(:short, ~r/^\w+$/)
-    |> validate_length(:short, max: 256, message: "Max length: %{count} characters")
+    |> validate_length(:short, max: 6, message: "Max length: %{count} characters")
     |> apply_action(:insert)
   end
 end

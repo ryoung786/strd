@@ -15,7 +15,7 @@ defmodule Strd.LinksFixtures do
         short: "short"
       })
 
-    {:ok, link} = Strd.Links.create_link(args.original, args.short)
+    {:ok, link} = Strd.Links.create_link(args.original, args.short, nil)
 
     link
   end

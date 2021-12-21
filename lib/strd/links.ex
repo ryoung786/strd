@@ -6,6 +6,7 @@ defmodule Strd.Links do
   import Ecto.Query, warn: false
   alias Strd.Repo
   alias Strd.Links.Link
+  alias Strd.Accounts.User
   require Logger
 
   @doc """
@@ -22,7 +23,6 @@ defmodule Strd.Links do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_link!(integer()) :: Link.t()
   def get_link!(id), do: Repo.get!(Link, id)
 
   @doc """
@@ -39,8 +39,9 @@ defmodule Strd.Links do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_by_short_url!(String.t()) :: Link.t()
   def get_by_short_url!(short_url), do: Repo.get_by!(Link, short: short_url)
+
+  def get_by_user(%Strd.Accounts.User{} = user), do: Repo.all(Ecto.assoc(user, :links))
 
   @doc """
   Creates a link.
@@ -54,48 +55,58 @@ defmodule Strd.Links do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_link(String.t()) :: {:ok, Link.t()} | {:error, Ecto.Changeset.t()}
-  def create_link(original_url) do
-    create_link_with_retries(original_url, 5)
+  def create_link(original_url, nil = _user) do
+    %Link{}
+    |> Link.changeset(%{original: original_url, short: generate_short_url()})
+    |> create_link_with_retries(5)
   end
 
-  @spec create_link(String.t(), String.t()) :: {:ok, Link.t()} | {:error, Ecto.Changeset.t()}
-  def create_link(original_url, short_url) do
-    # When the client provides a short url, we don't need to generate one.
-    # This also means we don't need to retry Link creation if it fails the
-    # unique constraint check.
+  def create_link(original_url, %User{id: user_id}) do
+    %Link{}
+    |> Link.changeset(%{original: original_url, short: generate_short_url(), user_id: user_id})
+    |> create_link_with_retries(5)
+  end
+
+  def create_link(original_url, short_url, nil = _user) do
     %Link{}
     |> Link.changeset(%{original: original_url, short: short_url})
     |> Repo.insert()
   end
 
-  defp create_link_with_retries(original_url, 0) do
+  def create_link(original_url, short_url, %User{id: user_id}) do
+    %Link{}
+    |> Link.changeset(%{original: original_url, short: short_url, user_id: user_id})
+    |> Repo.insert()
+  end
+
+  defp create_link_with_retries(changeset, 0) do
     # Recursion base case.  If we hit this, then we've generated 5 short urls,
     # and all of them have already been used.  In production, this is the kind of
     # thing we should alert on.
-    Logger.error("Unable to generate a unique short link", %{original_url: original_url})
+    Logger.error("Unable to generate a unique short link", %{
+      original_url: Ecto.Changeset.get_field(changeset, :original_url)
+    })
 
     # use new_changeset to avoid validation
     cs =
-      %Link{original: original_url}
-      |> Link.new_changeset(%{})
+      changeset
       |> Ecto.Changeset.add_error(:original, "Unable to generate a unique link")
       |> Map.put(:action, :insert)
 
     {:error, cs}
   end
 
-  defp create_link_with_retries(original_url, retries) do
-    %Link{}
-    |> Link.changeset(%{original: original_url, short: generate_short_url()})
+  defp create_link_with_retries(changeset, retries) do
+    changeset
+    |> Link.changeset(%{short: generate_short_url()})
     |> Repo.insert()
     |> case do
-      {:error, changeset} ->
+      {:error, error_changeset} ->
         # Only retry with a newly generated short url if the error
         # is that we violated the unique constraint
-        if short_url_taken?(changeset),
-          do: create_link_with_retries(original_url, retries - 1),
-          else: {:error, changeset}
+        if short_url_taken?(error_changeset),
+          do: create_link_with_retries(changeset, retries - 1),
+          else: {:error, error_changeset}
 
       {:ok, link} ->
         {:ok, link}
@@ -105,7 +116,6 @@ defmodule Strd.Links do
   @doc """
   Increments the view_count of a given Link by num
   """
-  @spec increase_view_count(String.t(), integer()) :: {integer(), [any()]}
   def increase_view_count(short_url, num \\ 1) when short_url != nil do
     from(l in Link, where: l.short == ^short_url, select: l.view_count)
     |> Repo.update_all(inc: [view_count: num])

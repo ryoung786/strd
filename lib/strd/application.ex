@@ -15,7 +15,8 @@ defmodule Strd.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Strd.PubSub},
       # Start the Endpoint (http/https)
-      StrdWeb.Endpoint
+      StrdWeb.Endpoint,
+      {Finch, name: Swoosh.Finch}
       # Start a worker by calling: Strd.Worker.start_link(arg)
       # {Strd.Worker, arg}
     ]
