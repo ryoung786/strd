@@ -32,6 +32,12 @@ defmodule StrdWeb.Router do
     get "/:short_url", LinkController, :redirect_short_url
   end
 
+  scope "/", StrdWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/my/links", LinkController, :mylinks_index
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", StrdWeb do
   #   pipe_through :api

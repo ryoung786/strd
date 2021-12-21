@@ -123,3 +123,18 @@ main .alert-info {
     opacity: 1;
   }
 }
+
+/*********************************/
+/* My Links */
+/*********************************/
+
+.my-links li {
+  border-left: 4px solid navy;
+  padding-left: 20px;
+  margin-bottom: 3rem;
+}
+
+.my-links li p {
+  margin-bottom: 0;
+  overflow-wrap: break-word;
+}

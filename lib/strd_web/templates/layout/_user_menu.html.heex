@@ -14,7 +14,7 @@
     <ul x-show="isOpen" @click.away="isOpen = false" class="dropdown">
       <%= if @current_user do %>
         <li class="email"><%= @current_user.email %></li>
-        <li><%= link to: Routes.link_path(@conn, :index) do %>Your Links<% end %></li>
+        <li><%= link to: Routes.link_path(@conn, :mylinks_index) do %>Your Links<% end %></li>
         <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
         <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
       <% else %>

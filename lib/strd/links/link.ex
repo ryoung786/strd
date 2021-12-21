@@ -12,17 +12,15 @@ defmodule Strd.Links.Link do
     timestamps()
   end
 
-  @type t :: %__MODULE__{original: String.t(), short: String.t()}
-
   @doc false
   def new_changeset(link, attrs) do
-    cast(link, attrs, [:original, :short, :view_count])
+    cast(link, attrs, [:original, :short, :view_count, :user_id])
   end
 
   @doc false
   def changeset(link, attrs) do
     link
-    |> cast(attrs, [:original, :short, :view_count])
+    |> cast(attrs, [:original, :short, :view_count, :user_id])
     |> validate_required([:original, :short])
     |> validate_length(:short, min: 3)
     |> validate_url(:original)
