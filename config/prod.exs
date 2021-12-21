@@ -13,9 +13,3 @@ config :strd, StrdWeb.Endpoint, cache_static_manifest: "priv/static/cache_manife
 
 # Do not print debug messages in production
 config :logger, level: :info
-
-config :strd, Strd.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: System.get_env("SENDGRID_API_KEY")
-
-config :swoosh, :api_client, Swoosh.ApiClient.Finch
